@@ -1,17 +1,21 @@
-const steps = [
-  { n: '01', icon: '🔀', title: 'Choisissez la direction', desc: 'BIF → CDF ou CDF → BIF selon votre besoin' },
-  { n: '02', icon: '📝', title: 'Entrez les détails', desc: 'Le montant et les numéros mobile money' },
-  { n: '03', icon: '✅', title: 'Confirmez l\'échange', desc: 'Sans compte, sans vérification d\'identité' },
-  { n: '04', icon: '⚡', title: 'Réception instantanée', desc: 'Fonds reçus en quelques secondes via Lightning' },
-]
+import { useLang } from '../LangContext'
 
 export default function HowItWorks() {
+  const { t } = useLang()
+
+  const steps = [
+    { n: '01', icon: '🔀', title: t.step1Title, desc: t.step1Desc },
+    { n: '02', icon: '📝', title: t.step2Title, desc: t.step2Desc },
+    { n: '03', icon: '✅', title: t.step3Title, desc: t.step3Desc },
+    { n: '04', icon: '⚡', title: t.step4Title, desc: t.step4Desc },
+  ]
+
   return (
     <section id="how-it-works" style={{ background: '#fff', padding: '100px 20px' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-        <div className="section-eyebrow">Processus</div>
-        <h2 className="section-title">Comment ça marche ?</h2>
-        <p className="section-sub">Quatre étapes simples. Aucun compte requis.</p>
+        <div className="section-eyebrow">{t.process}</div>
+        <h2 className="section-title">{t.howTitle}</h2>
+        <p className="section-sub">{t.howSub}</p>
 
         <div className="steps-grid">
           {steps.map((s, i) => (

@@ -12,7 +12,7 @@ export default function Footer() {
               <img src={FLAG_CD} alt="RDC" className="footer-flag" />
               <span>↔</span>
               <img src={FLAG_BI} alt="Burundi" className="footer-flag" />
-              <span className="footer-logo-text">Bridge</span>
+              <span className="footer-logo-text">Volta Send</span>
             </div>
             <p className="footer-tagline">
               La souveraineté financière pour l'Afrique centrale.
@@ -38,7 +38,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} Bridge RDC ↔ Burundi. Tous droits réservés.</p>
+          <p>© {new Date().getFullYear()} Volta Send. Tous droits réservés.</p>
           <p>Transfert instantané via Lightning Network</p>
         </div>
       </div>

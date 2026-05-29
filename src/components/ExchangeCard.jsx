@@ -1,22 +1,37 @@
 import { useState } from 'react'
 import { sendOtpBurundi, validateOtpBurundi, sendOtpDRC, validateOtpDRC } from '../api'
+import { useLang } from '../LangContext'
 
 const FLAG_BI = 'https://upload.wikimedia.org/wikipedia/commons/5/50/Flag_of_Burundi.svg'
 const FLAG_CD = 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Democratic_Republic_of_the_Congo.svg'
 
 const RATES = { BIF_TO_CDF: 0.45, CDF_TO_BIF: 2.22 }
 
+const CARRIERS_DRC = [
+  { value: 'Airtel', label: 'Airtel Money', logo: '🔴' },
+  { value: 'Orange', label: 'Orange Money', logo: '🟠' },
+  { value: 'M-Pesa', label: 'M-Pesa', logo: '🟢' },
+]
+
+const CARRIERS_BI = [
+  { value: 'Lumicash', label: 'Lumicash', logo: '🔵' },
+]
+
 function fmt(n) {
   return Math.floor(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
-function validateBI(v) { return /^(62|66|68|71)\d{6}$/.test(v.replace(/\s/g, '')) }
+function validateBI(v) {
+  const clean = v.replace(/[\s\-]/g, '')
+  return /^\+?257(62|66|68|71)\d{6}$/.test(clean) || /^(62|66|68|71)\d{6}$/.test(clean)
+}
 function validateCD(v) {
   const clean = v.replace(/[\s\-]/g, '')
   return /^\+?243\d{9}$/.test(clean) || /^(08|09)\d{8}$/.test(clean)
 }
 
 export default function ExchangeCard() {
+  const { t } = useLang()
   const [dir, setDir] = useState('bi-cd')
   const [amountBIF, setAmountBIF] = useState('')
   const [amountCDF, setAmountCDF] = useState('')
@@ -24,11 +39,10 @@ export default function ExchangeCard() {
   const [senderCD, setSenderCD] = useState('')
   const [recipientCD, setRecipientCD] = useState('')
   const [recipientBI, setRecipientBI] = useState('')
+  const [carrierDRC, setCarrierDRC] = useState('Airtel')
   const [status, setStatus] = useState(null)
   const [loading, setLoading] = useState(false)
-
-  // OTP step
-  const [step, setStep] = useState('form') // 'form' | 'otp'
+  const [step, setStep] = useState('form')
   const [otp, setOtp] = useState('')
   const [pendingData, setPendingData] = useState(null)
 
@@ -65,7 +79,7 @@ export default function ExchangeCard() {
           sender_number: senderBI.replace(/\s/g, ''),
           recipient_number: recipientCD.replace(/\s/g, ''),
           currency: 'BIF',
-          carrier: 'Lumicash',
+          carrier: carrierDRC,
         }
         data = await sendOtpBurundi(body)
       } else {
@@ -74,7 +88,7 @@ export default function ExchangeCard() {
           sender_number: senderCD.replace(/\s/g, ''),
           recipient_number: recipientBI.replace(/\s/g, ''),
           currency: 'CDF',
-          carrier: 'Airtel',
+          carrier: carrierDRC,
         }
         data = await sendOtpDRC(body)
       }
@@ -151,11 +165,12 @@ export default function ExchangeCard() {
           {dir === 'bi-cd' ? (
             <>
               <InputField label="Votre numéro Lumicash" flag={FLAG_BI} country="Burundi"
-                value={senderBI} onChange={setSenderBI} placeholder="62 XX XX XX" type="tel" />
+                value={senderBI} onChange={setSenderBI} placeholder="+257 62 XX XX XX" type="tel" />
               <InputField label="Montant à envoyer" currency="BIF"
                 value={amountBIF} onChange={setAmountBIF} placeholder="0" type="number" />
               <InputField label="Numéro du destinataire" flag={FLAG_CD} country="Congo"
                 value={recipientCD} onChange={setRecipientCD} placeholder="+243 9XX XXX XXX" type="tel" />
+              <CarrierSelect label="Opérateur du destinataire" carriers={CARRIERS_DRC} value={carrierDRC} onChange={setCarrierDRC} />
               <div className="rate-box">
                 <div className="rate-row">
                   <span className="rate-label">Taux de change</span>
@@ -176,10 +191,11 @@ export default function ExchangeCard() {
             <>
               <InputField label="Votre numéro (Airtel/Orange/M-Pesa)" flag={FLAG_CD} country="Congo"
                 value={senderCD} onChange={setSenderCD} placeholder="+243 9XX XXX XXX" type="tel" />
+              <CarrierSelect label="Votre opérateur" carriers={CARRIERS_DRC} value={carrierDRC} onChange={setCarrierDRC} />
               <InputField label="Montant à envoyer" currency="CDF"
                 value={amountCDF} onChange={setAmountCDF} placeholder="0" type="number" />
               <InputField label="Numéro du destinataire" flag={FLAG_BI} country="Burundi"
-                value={recipientBI} onChange={setRecipientBI} placeholder="62 XX XX XX" type="tel" />
+                value={recipientBI} onChange={setRecipientBI} placeholder="+257 62 XX XX XX" type="tel" />
               <div className="rate-box">
                 <div className="rate-row">
                   <span className="rate-label">Taux de change</span>
@@ -273,7 +289,32 @@ export default function ExchangeCard() {
         .otp-icon { font-size:1.5rem; flex-shrink:0; }
         .otp-info p { font-size:0.85rem; color:var(--muted); line-height:1.5; margin:0; }
         .otp-info strong { color:var(--text); }
+        .carrier-select { display:flex; gap:0.5rem; margin-bottom:0.9rem; flex-wrap:wrap; }
+        .carrier-btn { flex:1; min-width:80px; padding:0.55rem 0.4rem; border-radius:10px; font-size:0.78rem; font-weight:600; border:1.5px solid var(--gray-mid); background:#fff; color:var(--muted); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:4px; transition:all 0.2s; }
+        .carrier-btn.active { border-color:var(--green); background:var(--green-light); color:var(--green); }
+        .carrier-label { font-size:0.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
       `}</style>
+    </div>
+  )
+}
+
+function CarrierSelect({ label, carriers, value, onChange }) {
+  return (
+    <div style={{ marginBottom: '0.9rem' }}>
+      <div className="carrier-label">{label}</div>
+      <div className="carrier-select">
+        {carriers.map(c => (
+          <button
+            key={c.value}
+            className={`carrier-btn ${value === c.value ? 'active' : ''}`}
+            onClick={() => onChange(c.value)}
+            type="button"
+          >
+            <span>{c.logo}</span>
+            <span>{c.label}</span>
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

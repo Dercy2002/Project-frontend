@@ -1,6 +1,8 @@
 import ExchangeCard from './ExchangeCard'
+import { useLang } from '../LangContext'
 
 export default function Hero() {
+  const { t } = useLang()
   return (
     <section id="home" style={{
       minHeight: '100vh',
@@ -34,33 +36,30 @@ export default function Hero() {
               Powered by Lightning Network
             </div>
             <h1>
-              Transferts instantanés<br />
-              <span className="hero-highlight">RDC ↔ Burundi</span>
+              {t.heroTitle}<br />
+              <span className="hero-highlight">{t.heroHighlight}</span>
             </h1>
-            <p>
-              Envoyez de l'argent entre le Congo et le Burundi en quelques secondes.
-              Sans compte, sans KYC, sans frais.
-            </p>
+            <p>{t.heroDesc}</p>
             <div className="hero-pills">
-              <span className="pill pill-green">✓ 100% sécurisé</span>
-              <span className="pill">0% frais</span>
-              <span className="pill">⚡ Instantané</span>
-              <span className="pill">Sans KYC</span>
+              <span className="pill pill-green">{t.secure}</span>
+              <span className="pill">{t.free}</span>
+              <span className="pill">{t.instant}</span>
+              <span className="pill">{t.noKyc}</span>
             </div>
             <div className="hero-stats">
               <div className="stat">
                 <div className="stat-val">&lt;3s</div>
-                <div className="stat-label">Temps moyen</div>
+                <div className="stat-label">{t.avgTime}</div>
               </div>
               <div className="stat-divider" />
               <div className="stat">
                 <div className="stat-val">0%</div>
-                <div className="stat-label">Frais</div>
+                <div className="stat-label">{t.fees}</div>
               </div>
               <div className="stat-divider" />
               <div className="stat">
                 <div className="stat-val">24/7</div>
-                <div className="stat-label">Disponible</div>
+                <div className="stat-label">{t.available}</div>
               </div>
             </div>
           </div>

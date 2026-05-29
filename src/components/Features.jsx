@@ -1,19 +1,23 @@
-const features = [
-  { icon: '🔓', title: 'Zero KYC', desc: 'Aucun compte, aucune vérification d\'identité requise' },
-  { icon: '⚡', title: 'Lightning Fast', desc: 'Transactions instantanées via le réseau Lightning' },
-  { icon: '🔒', title: 'Sécurisé', desc: 'Chiffrement de bout en bout, fonds protégés' },
-  { icon: '📱', title: 'Mobile First', desc: 'Conçu pour les utilisateurs mobile money' },
-  { icon: '🌍', title: 'Pour l\'Afrique', desc: 'Fait en Afrique, pour l\'Afrique centrale' },
-  { icon: '💸', title: '0% Frais', desc: 'Zéro frais de transaction, toujours' },
-]
+import { useLang } from '../LangContext'
 
 export default function Features() {
+  const { t } = useLang()
+
+  const features = [
+    { icon: '🔓', title: t.feat1Title, desc: t.feat1Desc },
+    { icon: '⚡', title: t.feat2Title, desc: t.feat2Desc },
+    { icon: '🔒', title: t.feat3Title, desc: t.feat3Desc },
+    { icon: '📱', title: t.feat4Title, desc: t.feat4Desc },
+    { icon: '🌍', title: t.feat5Title, desc: t.feat5Desc },
+    { icon: '💸', title: t.feat6Title, desc: t.feat6Desc },
+  ]
+
   return (
     <section id="features" style={{ padding: '100px 20px', background: 'var(--gray)' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-        <div className="section-eyebrow">Avantages</div>
-        <h2 className="section-title">Pourquoi Bridge RDC ↔ Burundi ?</h2>
-        <p className="section-sub">La solution la plus rapide pour les transferts transfrontaliers.</p>
+        <div className="section-eyebrow">{t.advantages}</div>
+        <h2 className="section-title">{t.featTitle}</h2>
+        <p className="section-sub">{t.featSub}</p>
 
         <div className="features-grid">
           {features.map((f, i) => (

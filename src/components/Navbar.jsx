@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useLang } from '../LangContext'
 
 const FLAG_BI = 'https://upload.wikimedia.org/wikipedia/commons/5/50/Flag_of_Burundi.svg'
 const FLAG_CD = 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the_Democratic_Republic_of_the_Congo.svg'
@@ -6,6 +7,7 @@ const FLAG_CD = 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Flag_of_the
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const { lang, setLang, t } = useLang()
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 30)
@@ -14,9 +16,9 @@ export default function Navbar() {
   }, [])
 
   const links = [
-    { href: '#home', label: 'Accueil' },
-    { href: '#how-it-works', label: 'Fonctionnement' },
-    { href: '#features', label: 'Avantages' },
+    { href: '#home', label: t.home },
+    { href: '#how-it-works', label: t.howItWorks },
+    { href: '#features', label: t.features },
   ]
 
   return (
@@ -36,7 +38,7 @@ export default function Navbar() {
             <img src={FLAG_BI} alt="Burundi" className="flag" />
           </div>
           <div className="logo-text">
-            <span className="logo-main">Bridge</span>
+            <span className="logo-main">Volta Send</span>
             <span className="logo-sub">RDC · Burundi</span>
           </div>
         </a>
@@ -47,7 +49,10 @@ export default function Navbar() {
           ))}
         </div>
 
-        <a href="#home" className="nav-cta">⚡ Envoyer</a>
+        <button onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')} style={{ background:'var(--gray)', border:'1.5px solid var(--gray-mid)', borderRadius:8, padding:'0.4rem 0.75rem', fontWeight:700, fontSize:'0.8rem', color:'var(--text)', cursor:'pointer', marginRight:'0.5rem' }}>
+          {lang === 'fr' ? '🇬🇧 EN' : '🇫🇷 FR'}
+        </button>
+        <a href="#home" className="nav-cta">⚡ {t.send}</a>
 
         <button className="burger" onClick={() => setOpen(!open)} aria-label="Menu">
           <span className={`bar ${open ? 'bar-top' : ''}`} />
@@ -61,7 +66,10 @@ export default function Navbar() {
           {links.map(l => (
             <a key={l.href} href={l.href} className="mobile-link" onClick={() => setOpen(false)}>{l.label}</a>
           ))}
-          <a href="#home" className="mobile-cta" onClick={() => setOpen(false)}>⚡ Envoyer maintenant</a>
+          <button onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')} style={{ background:'var(--gray)', border:'1.5px solid var(--gray-mid)', borderRadius:8, padding:'0.7rem', fontWeight:700, fontSize:'0.9rem', color:'var(--text)', cursor:'pointer', textAlign:'center' }}>
+            {lang === 'fr' ? '🇬🇧 Switch to English' : '🇫🇷 Passer en Français'}
+          </button>
+          <a href="#home" className="mobile-cta" onClick={() => setOpen(false)}>⚡ {t.send}</a>
         </div>
       )}
 
